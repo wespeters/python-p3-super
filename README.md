@@ -115,99 +115,100 @@ As you can see by the output of running `log_in()` on a `Student` instance, the
 `super` keyword calls the specified method in the parent class, adding the
 functionality of the original method to your new method in a single line.
 
+<details><summary><em>All this talk about superclassses! What do we call the
+class that inherits from a superclass?</em></summary>
+<p>
+
+<h3>Subclasses (or children!)</h3>
+
+</p>
+</details>
+<br/>
+
 ***
 
 ## Calling `super` With Arguments
 
-The `#log_in` method defined above didn't take any arguments, but often, we'll
+The `log_in()` method defined above didn't take any arguments, but often, we'll
 need to call methods and provide some data as arguments. For example, let's
 modify our `User` class to give it a `name` attribute:
 
-```rb
-class User
-  attr_accessor :name
+```py
+class User:
+    def __init__(self, name):
+        self.name = name
 
-  def initialize(name)
-    @name = name
-  end
-
-  def log_in
-    @logged_in = true
-  end
-end
+    def log_in(self):
+        self.logged_in = True
 ```
 
 Let's also modify our `Student` class so that it can be initialized with a
 `name` and a `grade` attribute:
 
-```rb
-class Student < User
-  attr_accessor :name, :grade
+```py
+class Student(User):
+    def __init__(self, name, grade)
+        self.name = name
+        self.grade = grade
 
-  def initialize(name, grade)
-    @name = name
-    @grade = grade
-  end
 
-  def log_in
-    super
-    @in_class = true
-  end
-end
+    def log_in(self):
+        super().log_in()
+        self.in_class = True
 ```
 
 While we can still create new students with our updated class definition, it's
-not particularly DRY — both the `Student` and `User` classes have an
-`attr_accessor` defined for the `@name` instance variable, and both are
-responsible for setting the `@name` instance variable when a new instance is
-created.
+not particularly DRY — both the `Student` and `User` classes define a `name`
+instance variable and set it when an the class is instantiated.
 
-Ideally, we'd like to be able to call the `#initialize` method on the `User`
+Ideally, we'd like to be able to call the `__init__` method on the `User`
 class when a new student is created.
 
 `super` lets us do just that! We can call `super` with an argument from the
-`Student#initialize` method, which will call the `User#initialize` method with
+`Student.__init__` method, which will call the `User.__init__` method with
 that argument. Try updating the example code like so:
 
-```rb
-class User
-  attr_accessor :name
+```py
+class User:
+    def __init__(self, name):
+        print("User.__init__ called.")
+        self.name = name
 
-  def initialize(name)
-    puts "User#initialize called"
-    @name = name
-  end
+    def log_in(self):
+        self.logged_in = True
 
-  def log_in
-    @logged_in = true
-  end
-end
+class Student(User):
+    def __init__(self, name, grade):
+        print("Student.__init__ called.")
+        super().__init__(name)
+        self.grade = grade
 
-class Student < User
-  attr_accessor :grade
+    def log_in(self):
+        super().log_in()
+        self.in_class = True
 
-  def initialize(name, grade)
-    puts "Student#initialize called"
-    super(name)
-    @grade = grade
-  end
-
-  def log_in
-    super
-    @in_class = true
-  end
-end
-
-oneil = Student.new("O'neil", 10)
-# Student#initialize called
-# User#initialize called
-# => #<Student:0x00007f914705a9a8 @name="O'neil", @grade=10>
+oneil = Student("O'neil", 10)
+# Student.__init__ called.
+# User.__init__ called.
+oneil.__dict__
+# {'name': "O'neil", 'grade': 10}
 ```
 
 Just like in the previous example, `super` is used to call a method on the
-superclass with the same name as the subclass — the only difference is
-that this time we are passing in arguments that are required by the method
-defined in the superclass.
+superclass from the subclass — the only difference is that this time we are
+passing in arguments that are required by the method defined in the superclass.
+
+<details><summary><em><code>__init__</code> is the method that uses
+<code>super()</code> the most. Why do you think that is?</em></summary>
+<p>
+
+<h3>Every class has an <code>__init__</code> method.</h3>
+
+</p>
+</details>
+<br/>
+
+***
 
 ## Conclusion
 
@@ -215,14 +216,10 @@ Often when you are dealing with code that involves inheritance, you'll need
 to augment the functionality defined in the superclass with some additional
 behavior in the subclass. The `super` keyword allows you to do just that!
 
-
 ***
 
 ## Resources
 
 - [Python 3.8 Documentation](https://docs.python.org/3.8/)
 - [Inheritance - Python](https://docs.python.org/3/tutorial/classes.html#inheritance)
-- [PEP 318 - Decorators for Functions and Methods](https://peps.python.org/pep-0318/)
-- [Inheritance and Composition: A Python OOP Guide - Real Python](https://realpython.com/inheritance-composition-python/)
-- [Decorators in Python - GeeksforGeeks](https://www.geeksforgeeks.org/decorators-in-python/)
 - [Supercharge Your Classes With Python super() - Real Python](https://realpython.com/python-super/)
