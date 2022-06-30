@@ -42,85 +42,80 @@ share _some_ of the functionality of? Or what if we want our child class to
 inherit a method from the parent and then augment it in some way? We can achieve
 this with the use of the `super` keyword.
 
+***
+
 ## Using `super` to Supercharge Inheritance
 
 Let's say we are working on an education app in which users are either students
 or teachers. We have a parent, `User` class, that both our `Student` and
 `Teacher` classes inherit from.
 
-Our `User` class has a method, `log_in`, that sets an instance variable,
-`@logged_in` equal to `true`.
+Our `User` class has a method, `log_in()`, that sets an instance variable,
+`self.logged_in` equal to `True`.
 
-```ruby
-class User
-
-  def log_in
-    @logged_in = true
-  end
-end
+```py
+class User:
+    def log_in(self):
+        self.logged_in = True
 ```
 
 However, when a student logs into our app, we need to not only set their logged
-in attribute to `true`, we need to set their "in class" attribute to true. We
-could simply edit the `#log_in` method in the `User` class to account for this.
-But that doesn't make sense here. Remember that both `Student` and `Teacher`
-inherit from `User`. Teachers don't need to indicate that they are "in class",
-so we don't want to alter the `#log_in` method of our parent class and
-inadvertently give teachers some behavior that they don't want or need.
+in attribute to `True`, we need to set their "in class" attribute to `True` as
+well. We could simply edit the `log_in()` method in the `User` class to account
+for this. But that doesn't make sense here. Remember that both `Student` and
+`Teacher` inherit from `User`. Teachers don't need to indicate that they are
+"in class", so we don't want to alter the `log_in()` method of our parent class
+and inadvertently give teachers some behavior that they don't want or need.
 
-Instead, we can augment, or supercharge, the `#log_in` method _inside_ of the
+Instead, we can augment, or supercharge, the `log_in()` method _inside_ of the
 `Student` class.
 
 Let's take a look:
 
-```ruby
-class Student < User
-  def log_in
-    super
-    @in_class = true
-  end
-end
+```py
+class Student(User):
+    def log_in(self):
+        super().log_in()
+        self.in_class = True
 ```
 
-Here, we re-define the `#log_in` method and tell it to inherit any functionality
-of the `#log_in` method defined in the parent, or "super", class, which is
-`User`.
+Here, we re-define the `log_in()` method and tell it to inherit any
+functionality of the `log_in()` method defined in the parent, or "superclass,"
+which is `User`.
 
-In the `#log_in` method above, the `super` keyword will **call on the `#log_in`
-method as defined in the super class**. _Then_, the additional code that we're
-adding into our `Student#log_in` method will also run. We have therefore
-supercharged our `#log_in` method, for the `Student` class only.
+In the `log_in()` method above, the `super` keyword will **call on the
+`log_in()` method as defined in the superclass**. _Then_, the additional code
+that we're adding into our `Student.log_in()` method will also run. We have
+therefore supercharged our `log_in()` method, for the `Student` class only.
 
-You can see for yourself by adding a `puts` method in the `#log_in` methods for
-both the `User` and `Student` classes. Run this code in IRB or in a new Ruby
-file:
+You can see for yourself by adding a `print()` statement in the `log_in()`
+methods for both the `User` and `Student` classes. Run this code in the Python
+shell or in a new Python file:
 
-```rb
-class User
-  def log_in
-    puts "User#log_in called"
-    @logged_in = true
-  end
-end
+```py
+class User:
+    def log_in(self):
+        print("User.log_in() called.")
+        self.logged_in = True
 
-class Student < User
-  def log_in
-    puts "Student#log_in called"
-    super
-    @in_class = true
-  end
-end
+class Student(User):
+    def log_in(self):
+        print("Student.log_in() called.")
+        super().log_in()
+        self.in_class = True
 
-oneil = Student.new
-oneil.log_in
-# "Student#log_in called"
-# "User#log_in called"
-#  => true
+oneil = Student()
+oneil.log_in()
+# "Student.log_in() called."
+# "User.log_in() called."
+# True
 ```
 
-As you can see by the output of running `#log_in` on a `Student` instance, the
-`super` keyword calls the method of the same name that's defined in the `User`
-superclass.
+As you can see by the output of running `log_in()` on a `Student` instance, the
+`super` keyword calls the specified method in the parent class, adding the
+functionality of the original method to your new method in a single line.
+
+***
 
 ## Calling `super` With Arguments
 
