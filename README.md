@@ -159,7 +159,7 @@ class Student(User):
 
 While we can still create new students with our updated class definition, it's
 not particularly DRY — both the `Student` and `User` classes define a `name`
-instance variable and set it when an the class is instantiated.
+instance variable and set it when the class is instantiated.
 
 Ideally, we'd like to be able to call the `__init__` method on the `User`
 class when a new student is created.
